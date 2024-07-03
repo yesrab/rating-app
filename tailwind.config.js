@@ -5,7 +5,14 @@ export default {
     "./src/client/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage:{
+        loginGradient: "linear-gradient(96deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)"
+      },
+      fontFamily:{
+        cinacav:['CDM','Consolas']
+      }
+    },
   },
   plugins: [],
 }
