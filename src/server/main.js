@@ -1,12 +1,34 @@
 import express from "express";
 import ViteExpress from "vite-express";
-
+import "dotenv/config";
+import "express-async-errors";
+import connect from "./db/connect.js";
+const PORT = 3000;
+const DB_URI = process.env.DB || "";
 const app = express();
 
-app.get("/hello", (req, res) => {
+app.get("/hello",(req, res) => {
   res.send("Hello Vite + React!");
 });
 
-ViteExpress.listen(app, 3000, () =>
-  console.log("Server is listening on port 3000..."),
-);
+//error handler middleware
+import globalErrorHandler from "./middleware/globalErrorHandler.js";
+app.use(globalErrorHandler);
+//error handler middleware
+
+const startServer = async () => {
+  try {
+    await connect(DB_URI);
+    ViteExpress.listen(app, 3000, () => {
+      console.clear();
+      console.log(`Server Started at port ${PORT}`);
+      console.log("");
+      console.log("\x1b[36m%s\x1b[0m", `http://localhost:${PORT}/`);
+      console.log("^ click here");
+      console.log("");
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+startServer();
