@@ -36,17 +36,10 @@ function App() {
       </Route>,
     ),
   );
-
-  useEffect(() => {
-    const toastId = toast("admin username : admin , passowrd : adminadmin");
-    return () => {
-      toast.dismiss(toastId);
-    };
-  }, []);
-
   return (
     <>
       <Toaster
+        position='top-right'
         toastOptions={{
           style: {
             fontFamily: "CDM",

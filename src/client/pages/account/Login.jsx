@@ -1,8 +1,9 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Form, useNavigate, useSubmit } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import toast from "react-hot-toast";
 
 export const action = async ({ dispatch, request, params }) => {
   console.log("loginAcction fired");
@@ -27,6 +28,12 @@ const Login = () => {
   function handleFormSubmtion(data) {
     submit(data, { method: "POST", encType: "application/json" });
   }
+  useEffect(() => {
+    const toastId = toast("admin username : admin , passowrd : adminadmin");
+    return () => {
+      toast.dismiss(toastId);
+    };
+  }, []);
   return (
     <main className='min-h-screen bg-[rgb(34,193,195)] bg-loginGradient font-cinacav'>
       <div className='min-h-[90vh] min-w-full p-3 flex gap-4 flex-grow justify-center items-center'>
