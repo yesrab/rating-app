@@ -5,8 +5,12 @@ import ReactDOM from "react-dom/client";
 
 import App from "./App";
 
+import LoginContextProvider from "./context/LoginContextProvider";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <LoginContextProvider>
+      <App />
+    </LoginContextProvider>
   </React.StrictMode>,
 );
