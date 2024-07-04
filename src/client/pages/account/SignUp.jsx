@@ -1,8 +1,10 @@
-import React from "react";
-import { Form, useNavigate, useSubmit } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Form, redirect, useActionData, useNavigate, useSubmit } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import toast from "react-hot-toast";
+import { LoginContext } from "../../context/loginContext";
 
 yup.addMethod(
   yup.Schema,
@@ -51,13 +53,33 @@ yup.addMethod(
 
 export const action = async ({ dispatch, request, params }) => {
   console.log("loginAcction fired");
+  const REMOTE_URL = "/api/v1/account/signup/";
   const userData = await request.json();
-  console.log(userData);
+
+  const signupRequest = new Request(REMOTE_URL, {
+    method: "post",
+    body: JSON.stringify(userData),
+    headers: { "Content-Type": "application/json" },
+  });
+  const response = fetch(signupRequest);
+  response.then((resolvedResponce) =>
+    resolvedResponce.json().then((data) => {
+      dispatch({ type: "LOGIN", payload: data });
+      if (data.status == "success") {
+        return redirect("/");
+      }
+    }),
+  );
+  toast.promise(response, {
+    loading: "Signing up...",
+    success: "Account created!",
+    error: "oops some error has occured...",
+  });
   return null;
 };
 
 const schema = yup.object().shape({
-  name: yup.string().required("Please enter your name").min(20).max(60),
+  name: yup.string().required("Please enter your name").min(8).max(60),
   email: yup.string().required("Please enter your email address").email(),
   password: yup.string().required("Please enter your password").min(8).max(16).isPasswordStrong(
     {
@@ -72,6 +94,12 @@ const schema = yup.object().shape({
 const SignUp = () => {
   const navigator = useNavigate();
   const submit = useSubmit();
+  const { loginState, dispatch } = useContext(LoginContext);
+  useEffect(() => {
+    if (loginState.login) {
+      navigator("/");
+    }
+  }, []);
   const {
     register,
     handleSubmit,

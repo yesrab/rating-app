@@ -1,14 +1,37 @@
-import React,{useEffect} from "react";
-import { Form, useNavigate, useSubmit } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Form, useNavigate, useSubmit, redirect } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import toast from "react-hot-toast";
+import { LoginContext } from "../../context/loginContext";
 
 export const action = async ({ dispatch, request, params }) => {
   console.log("loginAcction fired");
   const userData = await request.json();
-  console.log(userData);
+  const REMOTE_URL = "/api/v1/account/login/";
+  const loginRequest = new Request(REMOTE_URL, {
+    method: "post",
+    body: JSON.stringify(userData),
+    headers: { "Content-Type": "application/json" },
+  });
+  const response = fetch(loginRequest);
+  response.then((resolvedResponce) =>
+    resolvedResponce.json().then((data) => {
+      console.log(data);
+      if (data.status == "success") {
+        dispatch({ type: "LOGIN", payload: data });
+        if (data.status == "success") {
+          return redirect("/");
+        }
+      }
+    }),
+  );
+  toast.promise(response, {
+    loading: "Logging in...",
+    success: "Success",
+    error: "oops some error has occured...",
+  });
   return null;
 };
 
@@ -20,6 +43,7 @@ const schema = yup.object().shape({
 const Login = () => {
   const navigator = useNavigate();
   const submit = useSubmit();
+  const { loginState, dispatch } = useContext(LoginContext);
   const {
     register,
     handleSubmit,
@@ -28,8 +52,15 @@ const Login = () => {
   function handleFormSubmtion(data) {
     submit(data, { method: "POST", encType: "application/json" });
   }
+
   useEffect(() => {
-    const toastId = toast("admin username : admin , passowrd : adminadmin");
+    if (loginState.login) {
+      navigator("/");
+    }
+  }, [loginState]);
+
+  useEffect(() => {
+    const toastId = toast("admin email : admin@admin.com , passowrd : adminadmin");
     return () => {
       toast.dismiss(toastId);
     };
