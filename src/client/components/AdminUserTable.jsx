@@ -67,7 +67,7 @@ const AdminUserTable = ({ loginState }) => {
   });
   // console.log(table.getHeaderGroups());
   return (
-    <table className='mt-2'>
+    <table className='mt-2 w-full'>
       <tbody className='text-sm'>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr className='border-collapse' key={headerGroup.id}>
