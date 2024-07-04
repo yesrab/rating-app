@@ -5,13 +5,13 @@ const template = {
   token: null,
   id: null,
   name: null,
-  role: null,
+  persona: null,
 };
 function reducer(state, action) {
   switch (action.type) {
     case "LOGIN":
-      const { token, id, name } = action.payload;
-      const updatedState = { ...state, login: true, token, id, name, role };
+      const { token, id, name, persona } = action.payload;
+      const updatedState = { ...state, login: true, token, id, name, persona };
       localStorage.setItem("loginState", JSON.stringify(updatedState));
       return updatedState;
     case "LOGOUT":
