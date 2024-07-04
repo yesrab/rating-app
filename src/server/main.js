@@ -7,9 +7,20 @@ const PORT = 3000;
 const DB_URI = process.env.DB || "";
 const app = express();
 
-app.get("/hello",(req, res) => {
+//express body json parsing middleware
+app.use(express.json());
+
+//express url parsing middleware
+app.use(express.urlencoded({ extended: false }));
+
+app.get("/hello", (req, res) => {
   res.send("Hello Vite + React!");
 });
+
+//account router
+import accountRouter from "./routes/account.js";
+app.use("/api/v1/account", accountRouter);
+//account router
 
 //error handler middleware
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
