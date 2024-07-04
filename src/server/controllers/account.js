@@ -3,6 +3,7 @@ const testAccount = (req, res) => {
 };
 
 import Accounts from "../model/accountModel.js";
+import Store from "../model/storeModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -69,4 +70,73 @@ const login = async (req, res) => {
   });
 };
 
-export { testAccount, signUp, login };
+const userList = async (req, res) => {
+  const { type } = req.params;
+  const owners = await Accounts.find({ persona: type }).select("-password");
+  res.status(200).json({
+    status: "success",
+    data: owners,
+    userType: type,
+  });
+};
+
+const userCount = async (req, res) => {
+  const userCount = await Accounts.countDocuments();
+  const storeCount = await Store.countDocuments();
+  const rating = await Store.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalRatingsCountSum: {
+          $sum: "$totalRatingsCount",
+        },
+      },
+    },
+  ]);
+  res.status(200).json({
+    status: "success",
+    userCount,
+    storeCount,
+    ratingsCount: rating?.length ? rating[0].totalRatingsCountSum : 0,
+  });
+};
+
+const getAdminStoreTable = async (req, res) => {
+  const allStores = await Store.find().select("-ratings");
+  const ownerIds = allStores.map((store) => store.owner);
+  const owners = await Accounts.find({ _id: { $in: ownerIds } }).select("name");
+
+  const ownerMap = owners.reduce((map, owner) => {
+    map[owner._id] = owner.name;
+    return map;
+  }, {});
+
+  const storesWithOwnerNames = allStores.map((store) => ({
+    ...store.toObject(),
+    owner: ownerMap[store.owner] || store.owner,
+  }));
+
+  // console.log(storesWithOwnerNames);
+  return storesWithOwnerNames;
+};
+
+const getStoreTables = async (req, res) => {
+  const adminStore = await getAdminStoreTable(req, res);
+  res.json({
+    message: "all tables as per admin acc",
+    status: "success",
+    adminStore,
+  });
+};
+
+const getAdminUserTable = async () => {
+  const allusers = await Accounts.find().select("-password");
+  const redactedUsers = allusers.map((user) => ({ ...user.toObject(), password: "Encrypted" }));
+  return redactedUsers;
+};
+
+const userTable = async (req, res) => {
+  const userInfo = await getAdminUserTable();
+  res.json({ status: "success", userInfo });
+};
+export { testAccount, signUp, login, userList, userCount, getStoreTables, userTable };

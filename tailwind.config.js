@@ -12,6 +12,9 @@ export default {
       fontFamily: {
         cinacav: ["CDM", "Consolas"],
       },
+      transform: {
+        modalCenter: "translate(-50%, -50%);",
+      },
     },
   },
   plugins: [],

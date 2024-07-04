@@ -22,6 +22,11 @@ import accountRouter from "./routes/account.js";
 app.use("/api/v1/account", accountRouter);
 //account router
 
+//store router
+import storeRouter from "./routes/store.js";
+app.use("/api/v1/store", storeRouter);
+//store router
+
 //error handler middleware
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 app.use(globalErrorHandler);

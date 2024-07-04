@@ -3,8 +3,13 @@ import accountError from "../errors/accountError.js";
 
 const globalErrorHandler = (error, request, response, next) => {
   console.log("\x1b[31m", "You have triggered the server's global error handler");
-  console.error(error);
-  if (error.code === 11000) {
+
+  console.log(error);
+  let accErr = false;
+  if (error?.errorResponse?.errmsg?.includes("accounts")) {
+    accErr = true;
+  }
+  if (error.code === 11000 && accErr) {
     return accountError(error, request, response);
   }
   if (
