@@ -29,7 +29,7 @@ function App() {
           />
           <Route
             path='/signup'
-            action={({ request, params }) => signUpAction({ request, params })}
+            action={({ request, params }) => signUpAction({ dispatch, request, params })}
             element={<SignUp />}
           />
         </Route>
