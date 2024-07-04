@@ -23,6 +23,7 @@
     "react-hook-form": "^7.52.1",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.24.1",
+    "validator": "^13.12.0",
     "vite-express": "*",
     "yup": "^1.4.0"
   },
