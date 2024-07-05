@@ -139,4 +139,30 @@ const userTable = async (req, res) => {
   const userInfo = await getAdminUserTable();
   res.json({ status: "success", userInfo });
 };
-export { testAccount, signUp, login, userList, userCount, getStoreTables, userTable };
+
+const getUserStoreTabel = async (req, res) => {
+  const { userID } = req.params;
+  const allStores = await Store.find();
+  const userStores = allStores.map((store) => {
+    const userRating = store.ratings.find((rating) => rating.userId.toString() === userID);
+    return {
+      _id: store._id,
+      storename: store.name,
+      storeaddress: store.address,
+      overallRating: store.OverallRatings,
+      myrating: userRating ? userRating.userRating : 0,
+    };
+  });
+  res.json({ status: "success", userStores });
+};
+
+export {
+  testAccount,
+  signUp,
+  login,
+  userList,
+  userCount,
+  getStoreTables,
+  userTable,
+  getUserStoreTabel,
+};

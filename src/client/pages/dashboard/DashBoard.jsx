@@ -8,6 +8,7 @@ import AddStore from "../../components/AddStore";
 import UserDetails from "../../components/UserDetails";
 import AdminStoreTable from "../../components/AdminStoreTable";
 import AdminUserTable from "../../components/AdminUserTable";
+import UserStoreTable from "../../components/UserStoreTable";
 
 export const loader = ({ loginState, request, params }) => {
   console.log("dasboard loader");
@@ -72,7 +73,7 @@ const DashBoard = () => {
         {loginState.persona === "user" ? (
           <>
             <div className='my-3'>
-              <AdminStoreTable loginState={loginState} />
+              <UserStoreTable loginState={loginState} />
             </div>
           </>
         ) : null}
